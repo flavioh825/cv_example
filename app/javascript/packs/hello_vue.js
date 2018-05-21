@@ -5,7 +5,7 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource)
 Vue.use(TurboLinksAdapter)
 
-document.addEventListener('turmbolinks:load', () => {
+document.addEventListener('turbolinks:load', () => {
   Vue.http.headers.common['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 
   var element = document.getElementById("user-form")
@@ -18,6 +18,15 @@ document.addEventListener('turmbolinks:load', () => {
       data: function(){
         return {
           user: user
+        }
+      },
+      methods: {
+        saveUser(){
+          this.$http.post('/users', {user: this.user}).then(response => {
+            Turbolinks.visit(`/users/${response.body.id}`)
+          }, response => {
+            console.log(response)
+          })
         }
       }
     });
